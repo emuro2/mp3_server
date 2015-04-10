@@ -147,7 +147,7 @@ usersRoute.post(function(req, res) {
 
     var user = new User();
 
-    user.name = req.body.name;
+    user.name = req.body.name.toUpperCase();
     user.email = req.body.email;
     user.pendingTasks = [];
     user.dateCreated = Date.now();
