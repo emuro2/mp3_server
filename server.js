@@ -71,10 +71,10 @@ userRoute.put(function(req, res) {
         if (err)
             res.status(404).send({ message: 'Could not complete request', data: err });
         
-
-        //user.name = req.body.name;
-        //user.email = req.body.email;
-        user.pendingTasks = user.pendingTasks.concat(req.body.pendingTasks);
+        if(!req.body.pendingTasks)
+            user.pendingTasks = [];
+        else 
+            user.pendingTasks = req.body.pendingTasks;
 
         user.save(function(err, user) {
             if (err)
@@ -191,7 +191,7 @@ taskRoute.put(function(req, res) {
         task.deadline= req.body.deadline;
         task.completed= req.body.completed  || false;
         task.assignedUser= req.body.assignedUser  || "";
-        task.assignedUserName= req.body.assignedUserName  || "";
+        task.assignedUserName= req.body.assignedUserName  || "unassigned";
 
 
         task.save(function(err) {
@@ -267,7 +267,7 @@ tasksRoute.post(function(req, res) {
     task.deadline= req.body.deadline;
     task.completed= (req.body.completed ? req.body.completed : false);
     task.assignedUser= (req.body.assignedUser ? req.body.assignedUser : "");
-    task.assignedUserName= (req.body.assignedUserName ? req.body.assignedUserName : "");
+    task.assignedUserName= (req.body.assignedUserName ? req.body.assignedUserName : "unassigned");
     task.dateCreated= Date.now();
 
 
