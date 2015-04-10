@@ -58,6 +58,8 @@ userRoute.get(function (req, res) {
         if(err)
             res.status(404).send({ message: 'Could not complete request', data: err });
 
+        else if(!user)
+            res.status(404).send({ message: 'Could not complete request', data: user });
         else
             res.status(200).json({ message: 'Completed Request', data: user });
     });
@@ -89,13 +91,21 @@ userRoute.put(function(req, res) {
 
 
 userRoute.delete(function(req, res) {
+    User.findById(req.params.id, function(err, user){
+        if(err)
+            res.status(404).send({ message: 'Could not complete request', data: err });
 
-    User.findByIdAndRemove(req.params.id, function(err) {
-        if (err)
-            res.status(404).send({ message: 'Could not delete user', data: err });
+        else if(!user)
+            res.status(404).send({ message: 'Could not complete request', data: user });
+        else{
+            User.findByIdAndRemove(req.params.id, function(err) {
+                if (err)
+                    res.status(404).send({ message: 'Could not delete user', data: err });
 
-        else
-            res.status(200).json({ message: 'Successfully deleted user', data:{} });
+                else
+                    res.status(200).json({ message: 'Successfully deleted user', data:{} });
+            });
+        }
     });
 });
 
@@ -147,7 +157,7 @@ usersRoute.post(function(req, res) {
 
     var user = new User();
 
-    user.name = req.body.name.toUpperCase();
+    user.name = req.body.name;
     user.email = req.body.email;
     user.pendingTasks = [];
     user.dateCreated = Date.now();
